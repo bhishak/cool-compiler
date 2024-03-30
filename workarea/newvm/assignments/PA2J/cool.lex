@@ -220,7 +220,7 @@ z= [zZ]
     return new Symbol(TokenConstants.CLASS);
 }
 
-<YYINITIAL>"inherits" {return new Symbol(TokenConstants.INHERITS);}
+<YYINITIAL>{i}{n}{h}{e}{r}{i}{t}{s} {return new Symbol(TokenConstants.INHERITS);}
 <YYINITIAL>"*)"
 {   /* unmatched "*)" */
     return new Symbol(TokenConstants.ERROR, new String("Unmatched *)")); }
