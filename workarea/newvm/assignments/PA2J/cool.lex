@@ -178,6 +178,9 @@ z= [zZ]
                                         if(stringhasnull) {
                                             return new Symbol(TokenConstants.ERROR, new String("String contains escaped null character.")); 
                                         }
+                                        if (string.length() >= MAX_STR_CONST) {
+                                            return new Symbol(TokenConstants.ERROR, new String("String constant too long")); 
+                                        }
                                         return new Symbol(TokenConstants.STR_CONST, 
                                         AbstractTable.stringtable.addString(string.toString()));
 
@@ -204,6 +207,9 @@ z= [zZ]
 <STRING>[^\n\r\"\\]                {
     if(yytext().charAt(0) == '\0') {
             stringhasnull = true;
+    }
+    if (string.length() >= MAX_STR_CONST) {
+        // do nothing
     }
     string.append( yytext() );}
 
