@@ -217,7 +217,9 @@ z= [zZ]
 }
 
 <YYINITIAL>"inherits" {return new Symbol(TokenConstants.INHERITS);}
-
+<YYINITIAL>"*)"
+{   /* unmatched "*)" */
+    return new Symbol(TokenConstants.ERROR, new String("Unmatched *)")); }
 <YYINITIAL>":" {
     return new Symbol(TokenConstants.COLON);
 }
