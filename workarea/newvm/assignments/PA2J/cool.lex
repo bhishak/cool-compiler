@@ -209,7 +209,7 @@ z= [zZ]
     curr_lineno+=1;
 }
 
-<YYINITIAL>"class" {
+<YYINITIAL>{c}{l}{a}{s}{s} {
     return new Symbol(TokenConstants.CLASS);
 }
 
@@ -250,12 +250,16 @@ z= [zZ]
 <YYINITIAL>":"    { return  new Symbol(TokenConstants.COLON); }
 <YYINITIAL>{t}{h}{e}{n}    { return  new Symbol(TokenConstants.THEN); }
 <YYINITIAL>"~"    { return  new Symbol(TokenConstants.NEG); }
-<YYINITIAL>"{e}{l}{s}{e}"    { return  new Symbol(TokenConstants.ELSE); }
+<YYINITIAL>{e}{l}{s}{e}    { return  new Symbol(TokenConstants.ELSE); }
 <YYINITIAL>{w}{h}{i}{l}{e}    { return  new Symbol(TokenConstants.WHILE); }
-<YYINITIAL>"{l}{e}{t}"    { return  new Symbol(TokenConstants.LET); }
+<YYINITIAL>{l}{e}{t}    { return  new Symbol(TokenConstants.LET); }
+<YYINITIAL>e{s}{a}{c}    { return  new Symbol(TokenConstants.ESAC); }
+<YYINITIAL>{i}{s}{v}{o}{i}{d}    { return  new Symbol(TokenConstants.ISVOID); }
+<YYINITIAL>{l}{o}{o}{p}    { return  new Symbol(TokenConstants.LOOP); }
+<YYINITIAL>of    { return  new Symbol(TokenConstants.OF); }
 
-<YYINITIAL>"true"    { return  new Symbol(TokenConstants.BOOL_CONST, AbstractTable.idtable.addString(yytext())); }
-<YYINITIAL>"false"    { return  new Symbol(TokenConstants.BOOL_CONST, AbstractTable.idtable.addString(yytext())); }
+<YYINITIAL>t{r}{u}{e}    { return  new Symbol(TokenConstants.BOOL_CONST, AbstractTable.idtable.addString("true")); }
+<YYINITIAL>f{a}{l}{s}{e}    { return  new Symbol(TokenConstants.BOOL_CONST, AbstractTable.idtable.addString("false")); }
 
 <YYINITIAL>{Digit}+ { return  new Symbol(TokenConstants.INT_CONST, AbstractTable.idtable.addInt(Integer.valueOf(yytext()))); }
 
