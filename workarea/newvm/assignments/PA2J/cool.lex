@@ -75,6 +75,8 @@ import java.io.*;
 %{
       StringBuffer string = new StringBuffer();
       private int nestedCommentCount = 1;
+      private boolean string2long = false;
+      private boolean stringhasnull = false;
 %}
 
 %class CoolLexer
@@ -158,7 +160,7 @@ z= [zZ]
 
 <YYINITIAL>"--"     {  yybegin(COMMENT2);   }
 
-<YYINITIAL>\"                       { string.setLength(0); yybegin(STRING); }
+<YYINITIAL>\"                       { string.setLength(0); yybegin(STRING); string2long=false; stringhasnull=false; }
 <YYINITIAL>\'.\'                       {    string.setLength(0);
                                             String a = yytext();
                                             if (a.length() != 3) {
@@ -172,7 +174,10 @@ z= [zZ]
 <STRING2>.                       { return new Symbol(TokenConstants.STR_CONST, 
                                         AbstractTable.stringtable.addString(string.toString())); }
 <STRING>\"                          { 
-                                        yybegin(YYINITIAL);  
+                                        yybegin(YYINITIAL);
+                                        if(stringhasnull) {
+                                            return new Symbol(TokenConstants.ERROR, new String("String contains escaped null character.")); 
+                                        }
                                         return new Symbol(TokenConstants.STR_CONST, 
                                         AbstractTable.stringtable.addString(string.toString()));
 
@@ -185,7 +190,7 @@ z= [zZ]
 <STRING>"\b"                { string.append( '\b' ); }
 <STRING>\\\r               { string.append( '\r' ); }
 <STRING>\\\"               { string.append( '\"' ); }
-<STRING>\\.                          {
+<STRING>\\[a-zA-Z0-9]                          {
     string.append(String.valueOf(yytext().charAt(1)) );
 }
 <STRING>\n {
@@ -194,14 +199,13 @@ z= [zZ]
     return new Symbol(TokenConstants.ERROR, "Unterminated string constant");
 
 }
-<STRING>\\$ {}
 <STRING>\\                {
     string.append( '\\'); }
-<STRING>[^\n\r\"\\]+                { 
+<STRING>[^\n\r\"\\]                {
+    if(yytext().charAt(0) == '\0') {
+            stringhasnull = true;
+    }
     string.append( yytext() );}
-<STRING>[^ ] {
-    System.err.println("Unexpected did not match" + yytext());
-}
 
 <YYINITIAL>{NonNewlineWS} {
                                 {
@@ -263,10 +267,10 @@ z= [zZ]
 <YYINITIAL>{l}{o}{o}{p}    { return  new Symbol(TokenConstants.LOOP); }
 <YYINITIAL>of    { return  new Symbol(TokenConstants.OF); }
 
-<YYINITIAL>t{r}{u}{e}    { return  new Symbol(TokenConstants.BOOL_CONST, AbstractTable.idtable.addString("true")); }
-<YYINITIAL>f{a}{l}{s}{e}    { return  new Symbol(TokenConstants.BOOL_CONST, AbstractTable.idtable.addString("false")); }
+<YYINITIAL>t{r}{u}{e}    { return  new Symbol(TokenConstants.BOOL_CONST, new Boolean(true)); }
+<YYINITIAL>f{a}{l}{s}{e}    { return  new Symbol(TokenConstants.BOOL_CONST, new Boolean(false)); }
 
-<YYINITIAL>{Digit}+ { return  new Symbol(TokenConstants.INT_CONST, AbstractTable.idtable.addInt(Integer.valueOf(yytext()))); }
+<YYINITIAL>{Digit}+ { return  new Symbol(TokenConstants.INT_CONST, AbstractTable.inttable.addString(yytext())); }
 
 <YYINITIAL>[A-Z]({Digit}|{Letter}|_)*   { return  new Symbol(TokenConstants.TYPEID, AbstractTable.idtable.addString(yytext())); }
 <YYINITIAL>[a-z]({Digit}|{Letter}|_)*   { return  new Symbol(TokenConstants.OBJECTID, AbstractTable.idtable.addString(yytext())); }
