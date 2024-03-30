@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 i686/ubuntu
+FROM --platform=linux/amd64 ubuntu:14.04
 
 RUN apt-get update
 RUN apt-get install -y \
