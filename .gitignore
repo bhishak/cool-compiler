@@ -1,1 +1,3 @@
-/workarea
+# Include files inside foldername
+!workarea/newvm/assignments/
+!workarea/newvm/assignments/*

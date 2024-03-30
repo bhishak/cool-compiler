@@ -185,11 +185,14 @@ z= [zZ]
 <STRING>"\b"                { string.append( '\b' ); }
 <STRING>\\\r               { string.append( '\r' ); }
 <STRING>\\\"               { string.append( '\"' ); }
-<STRING>\\\n                          {
-    //string.append(String.valueOf(yytext().charAt(1)) );
-}
 <STRING>\\.                          {
     string.append(String.valueOf(yytext().charAt(1)) );
+}
+<STRING>\n {
+    curr_lineno +=1;
+    yybegin(YYINITIAL);
+    return new Symbol(TokenConstants.ERROR, "Unterminated string constant");
+
 }
 <STRING>\\$ {}
 <STRING>\\                {
